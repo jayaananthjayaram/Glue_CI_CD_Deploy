@@ -51,4 +51,4 @@ FROM emp_table
 print("Iceberg insert completed")
 
 job.commit()
-
+print("Job completed successfully")
