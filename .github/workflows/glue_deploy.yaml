@@ -21,7 +21,7 @@ jobs:
     - name: Configure AWS
       uses: aws-actions/configure-aws-credentials@v4
       with:
-        role-to-assume: arn:aws:iam::<ACCOUNT_ID>:role/GitHubGlueDeployRole
+        role-to-assume: arn:aws:iam::442042511686:role/GitHubGlueDeployRole
         aws-region: ap-southeast-2
 
     # Upload Glue scripts to S3 (versioned)
