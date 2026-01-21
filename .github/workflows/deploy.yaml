@@ -1,0 +1,38 @@
+name: Glue CICD
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - glue-scripts/**
+      - cloudformation/**
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Configure AWS
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: arn:aws:iam::<ACCOUNT_ID>:role/GitHubGlueDeployRole
+        aws-region: ap-southeast-2
+
+    # Upload Glue scripts to S3 (versioned)
+    - name: Upload Glue Scripts
+      run: |
+        aws s3 sync glue-scripts/ s3://glue-artifacts-jayaananth/scripts/
+
+    # Deploy / Update Glue Infra
+    - name: Deploy Glue Stack
+      run: |
+        aws cloudformation deploy \
+          --template-file cloudformation/glue-job.yaml \
+          --stack-name glue-cash-transactions \
+          --capabilities CAPABILITY_NAMED_IAM

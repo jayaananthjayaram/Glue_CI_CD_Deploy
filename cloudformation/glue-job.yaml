@@ -1,0 +1,35 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Resources:
+  GlueJobRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: glue-cicd-role
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: glue.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AWSGlueServiceRole
+        - arn:aws:iam::aws:policy/AmazonS3FullAccess
+
+  GlueJob:
+    Type: AWS::Glue::Job
+    Properties:
+      Name: cash-transactions-job
+      Role: !GetAtt GlueJobRole.Arn
+      GlueVersion: "4.0"
+      WorkerType: G.1X
+      NumberOfWorkers: 2
+      Timeout: 60
+      MaxRetries: 2
+      Command:
+        Name: glueetl
+        ScriptLocation: s3://glue-artifacts-jayaananth/scripts/load_cash_transactions.py
+      DefaultArguments:
+        "--enable-glue-datacatalog": "true"
+        "--job-language": "python"
+        "--enable-continuous-cloudwatch-log": "true"
