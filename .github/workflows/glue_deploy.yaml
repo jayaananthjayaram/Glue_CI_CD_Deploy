@@ -40,5 +40,5 @@ jobs:
       run: |
         aws cloudformation deploy \
           --template-file cloudformation/iceberg_table.yml \
-          --stack-name glue-iceberg_table \
+          --stack-name glue-iceberg-table \
           --capabilities CAPABILITY_NAMED_IAM
