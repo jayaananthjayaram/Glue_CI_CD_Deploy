@@ -1,0 +1,24 @@
+Type: AWS::Glue::Table
+Properties:
+  DatabaseName: finance
+  CatalogId: !Ref AWS::AccountId
+  TableInput:
+    Name: onix_contributors
+    TableType: EXTERNAL_TABLE
+    Parameters:
+      table_type: ICEBERG
+      format: parquet
+    StorageDescriptor:
+      Location: s3://samplefilesglue/iceberg/finance/onix_contributors/
+      Columns:
+        - Name: product_id
+          Type: string
+        - Name: contributor_role
+          Type: string
+        - Name: person_name
+          Type: string
+        - Name: ingestion_date
+          Type: date
+    PartitionKeys:
+      - Name: ingestion_date
+        Type: date
